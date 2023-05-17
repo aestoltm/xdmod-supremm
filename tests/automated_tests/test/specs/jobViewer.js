@@ -5,7 +5,6 @@ var jV = require('./jobViewer.page.js');
 var me = require('../../../../../xdmod/tests/ui/test/specs/xdmod/metricExplorer.page.js');
 var xdmod = require('../../../../../xdmod/tests/ui/test/specs/xdmod/xdmod.page.js');
 
-
 describe('Job Viewer', function jobViewer() {
     logIn.login('centerdirector');
     var selectors = jV.selectors;
