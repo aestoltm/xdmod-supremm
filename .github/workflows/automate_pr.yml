@@ -1,77 +1,27 @@
-name: Create Pull Request
+# ./.github/workflows/auto-pr.yaml
+name: Auto-PR
 on:
-  push:
-    branches:
-      - aestoltm-patch-1
+  create:
+
 jobs:
-  updateAuthors:
+  pull-request:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-    # You may pin to the exact commit or the version.
-    # uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e
-    # add comment to test
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          # The token that the action will use to create and update the pull request.
-          #token: # optional, default is ${{ github.token }}
-          # The token that the action will use to create and update the branch. Defaults to the value of `token`.
-      
-          #branch-token: # optional
-          # Relative path under $GITHUB_WORKSPACE to the repository. Defaults to $GITHUB_WORKSPACE.
-      
-          #path: # optional
-          # A comma or newline-separated list of file paths to commit. Paths should follow git's pathspec syntax. Defaults to adding all new and modified files.
-      
-          #add-paths: # optional
-          # The message to use when committing changes.
-          commit-message: 'test' # optional, default is [create-pull-request] automated change
-          # The committer name and email address in the format `Display Name <email@address.com>`. Defaults to the GitHub Actions bot user.
-      
-          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com> # optional, default is github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          # The author name and email address in the format `Display Name <email@address.com>`. Defaults to the user who triggered the workflow run.
-      
-          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com> # optional, default is ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-          # Add `Signed-off-by` line by the committer at the end of the commit log message.
-          signoff: false # optional
-          # The pull request branch name.
-          branch: test-automated-pr # optional, default is create-pull-request/patch
-          # Delete the `branch` if it doesn't have an active pull request associated with it.
-      
-          delete-branch: true # optional
-          # The branch suffix type when using the alternative branching strategy.
-          #branch-suffix: # optional
-          # The pull request base branch. Defaults to the branch checked out in the workflow.
-      
-          base: 'main' # optional
-          # A fork of the checked out parent repository to which the pull request branch will be pushed. e.g. `owner/repo-fork`. The pull request will be created to merge the fork's branch into the parent's base.
-      
-          #push-to-fork: # optional
-          # Sign commits as `github-actions[bot]` when using `GITHUB_TOKEN`, or your own bot when using GitHub App tokens.
-          #sign-commits: # optional
-          # The title of the pull request.
-          title: 'Test Github automated PR action' # optional, default is Changes by create-pull-request action
-          # The body of the pull request.
-          body: 'test' # optional, default is Automated changes by [create-pull-request](https://github.com/peter-evans/create-pull-request) GitHub action
-          # The path to a file containing the pull request body. Takes precedence over `body`.
-          #body-path: # optional
-          # A comma or newline separated list of labels.
-          #labels: # optional
-          # A comma or newline separated list of assignees (GitHub usernames).
-          #assignees: # optional
-          # A comma or newline separated list of reviewers (GitHub usernames) to request a review from.
-          #reviewers: # optional
-          # A comma or newline separated list of GitHub teams to request a review from. Note that a `repo` scoped Personal Access Token (PAT) may be required.
-      
-          #team-reviewers: # optional
-          # The number of the milestone to associate the pull request with.
-          #milestone: # optional
-          # Create a draft pull request. Valid values are `true` (only on create), `always-true` (on create and update), and `false`.
-      
-          #draft: # optional
-          # Indicates whether maintainers can modify the pull request.
-          maintainer-can-modify: true # optional, default is true
-          
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Create Pull Request
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # used implicitly by the gh CLI to authenticate with GitHub
+        GITHUB_REPO: ${{ github.repository }}
+        GITHUB_REF: ${{ github.ref }}
+      run: |
+        gh pr create \
+          --repo=${GITHUB_REPO} \
+          --head=aestoltm-patch-1 \
+          --base=main \
+          --title="Pulling ${GITHUB_REF} into main" \
+          --body=":crown: *An automated PR*"
