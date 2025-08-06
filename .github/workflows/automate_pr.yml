@@ -1,8 +1,9 @@
 # ./.github/workflows/auto-pr.yaml
 name: Auto-PR
 on:
-  create:
-
+  push:
+    branches:
+      - aestoltm-patch-1
 jobs:
   pull-request:
     runs-on: ubuntu-latest
